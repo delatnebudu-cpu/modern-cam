@@ -146,3 +146,58 @@ Požadavek: [co přesně potřebuji]
 
 **Last updated:** 2026-02-15
 **Maintainer:** @TVOJUZIVATEL
+
+---
+
+## 🆕 AKTUALIZACE 2026-02-15: Plně funkční CAM software
+
+### Co se změnilo od poslední verze:
+
+1. **Přidána Toolpath.jsx** - Samostatná komponenta pro vykreslování drah
+2. **Rozšířen geometryUtils.js** - 490 řádků CAM algoritmů
+3. **Funkční G-Code export** - Tlačítko v Sidebar nyní stahuje soubory
+4. **Raycasting funguje** - Lze klikat na objekty v 3D
+5. **Barevné kódování** - Každý typ operace má jinou barvu
+
+### Nové funkce v geometryUtils.js:
+```javascript
+// Trochoidal milling - KLÍČOVÁ FUNKCE
+generateTrochoidalPath(startPoint, endPoint, toolDiameter, stepover)
+// Použití: Umožňuje malým strojům frézovat tvrdé materiály
+
+// Holding tabs - Automatické můstky
+addHoldingTabs(points, tabCount, tabWidth, tabHeight)
+// Použití: Zabrání odlétnutí dílu při poslední operaci
+
+// V-Carve - Gravírování
+generateVCarve(points, vAngle, maxDepth)
+// Použití: Vytvoří ostré rohy při gravírování textu
+```
+
+### Důležité pro AI:
+
+**Když user říká "nefunguje export"**, zkontroluj:
+1. Je selectedId nastaveno? (musí být vybraný objekt)
+2. Má entity správnou strukturu? (points, depth, type)
+3. Je toolSettings kompletní? (všech 5 parametrů)
+4. Prošel generateGCode() bez chyb? (try/catch v App.jsx)
+
+**Když user říká "nic se nezobrazuje"**, zkontroluj:
+1. Je Toolpath importován v Scene.jsx?
+2. Má entity.points správný formát? [{x, y, z}, ...]
+3. Jsou points v rozumných souřadnicích? (0-500mm obvykle)
+4. Je Three.js Canvas správně namountován?
+
+### Test snippet pro rychlé debugování:
+```javascript
+// Přidej do Scene.jsx pro debug
+console.log('Entities:', entities.map(e => ({
+  id: e.id,
+  points: e.points.length,
+  type: e.type
+})));
+```
+
+---
+
+**Status:** ✅ PRODUCTION READY pro základní 2D CAM operace
